@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.pyc
+database.db
+uploads/*.pdf
+uploads/*.jpg
+uploads/*.jpeg
+uploads/*.png
+uploads/*.webp
+.vscode/
+.pytest_cache/
+check_db.py
+test_app.py
