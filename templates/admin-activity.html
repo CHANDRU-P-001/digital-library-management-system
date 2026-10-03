@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Admin Activity Log{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Admin Activity Log</h1>
+        <p>A record of recent admin actions (last 100).</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% include "_admin_nav.html" %}
+
+        {% if logs %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr><th>Admin</th><th>Action</th><th>Details</th><th>When</th></tr>
+                </thead>
+                <tbody>
+                    {% for log in logs %}
+                    <tr>
+                        <td><strong>{{ log.username }}</strong></td>
+                        <td><span class="badge">{{ log.action.replace('_', ' ')|title }}</span></td>
+                        <td>{{ log.details }}</td>
+                        <td>{{ log.created_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🕓</div>
+            <h3>No activity yet</h3>
+            <p>Admin actions will appear here as they happen.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}

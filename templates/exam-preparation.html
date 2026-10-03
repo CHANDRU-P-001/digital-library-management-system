@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% block title %}Exam Preparation{% endblock %}
+
+{% block content %}
+
+<!-- ========== Page header ========== -->
+<section class="page-header">
+    <div class="container">
+        <h1>Exam Preparation</h1>
+        <p>Subject notes, reference material and previous question papers.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- ========== Search + exam filter ========== -->
+        <form action="{{ url_for('exam_preparation') }}" method="GET" class="filter-bar">
+            <input type="text" name="q" value="{{ search }}"
+                   placeholder="Search by title or subject...">
+
+            <select name="exam">
+                <option value="">All Exams</option>
+                {% for exam in exams %}
+                <option value="{{ exam.exam_name }}"
+                        {{ 'selected' if exam.exam_name == selected_exam }}>
+                    {{ exam.exam_name }}
+                </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="btn btn-primary">Search</button>
+
+            {% if search or selected_exam %}
+            <a href="{{ url_for('exam_preparation') }}" class="btn btn-outline">Clear</a>
+            {% endif %}
+        </form>
+
+        <!-- ========== Study materials ========== -->
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">📝 Study Materials</h2>
+                <p class="section-subtitle">
+                    {{ study_materials|length }} item{{ '' if study_materials|length == 1 else 's' }}
+                </p>
+            </div>
+        </div>
+
+        {% if study_materials %}
+        <div class="material-list">
+            {% for material in study_materials %}
+                {% include "_material_item.html" %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📝</div>
+            <h3>No study materials found</h3>
+            <p>Try a different keyword or clear the filters.</p>
+        </div>
+        {% endif %}
+
+        <!-- ========== Previous question papers ========== -->
+        <div class="section-header" style="margin-top: 50px;">
+            <div>
+                <h2 class="section-title">📄 Previous Question Papers</h2>
+                <p class="section-subtitle">
+                    {{ question_papers|length }} paper{{ '' if question_papers|length == 1 else 's' }}, newest first
+                </p>
+            </div>
+        </div>
+
+        {% if question_papers %}
+        <div class="material-list">
+            {% for material in question_papers %}
+                {% include "_material_item.html" %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📄</div>
+            <h3>No question papers found</h3>
+            <p>Try a different keyword or clear the filters.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

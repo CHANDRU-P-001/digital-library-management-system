@@ -1,0 +1,855 @@
+/* ==========================================================
+   Digital Library: main stylesheet
+   ========================================================== */
+
+/* ---------- 1. Design tokens (change colors here) ---------- */
+:root {
+    --primary: #4f46e5;
+    --primary-dark: #4338ca;
+    --primary-light: #eef2ff;
+    --accent: #f59e0b;
+    --danger: #dc2626;
+    --success: #16a34a;
+    --text: #1f2937;
+    --text-muted: #6b7280;
+    --bg: #f8fafc;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+    --radius: 12px;
+}
+
+/* ---------- 2. Reset and base ---------- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+main { flex: 1; }
+a { color: var(--primary); text-decoration: none; }
+img { max-width: 100%; }
+
+.container { max-width: 1150px; margin: 0 auto; padding: 0 20px; }
+.section { padding: 50px 0; }
+.section-title { font-size: 1.7rem; margin-bottom: 6px; }
+.section-subtitle { color: var(--text-muted); margin-bottom: 28px; }
+.section-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 10px; }
+.section-header .section-subtitle { margin-bottom: 0; }
+
+/* ---------- 3. Navbar ---------- */
+.navbar { background: var(--white); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+.navbar-inner { display: flex; justify-content: space-between; align-items: center; height: 68px; }
+.logo { font-size: 1.3rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.nav-menu { display: flex; gap: 6px; align-items: center; }
+.nav-menu a { padding: 8px 14px; border-radius: 8px; color: var(--text); font-weight: 500; transition: 0.2s; }
+.nav-menu a:hover { background: var(--primary-light); color: var(--primary); }
+.nav-menu a.active { background: var(--primary-light); color: var(--primary); }
+.nav-menu a.nav-admin { border: 1px solid var(--primary); color: var(--primary); }
+.menu-toggle { display: none; background: none; border: none; font-size: 1.7rem; cursor: pointer; color: var(--text); }
+
+/* ---------- 4. Buttons ---------- */
+.btn {
+    display: inline-block; padding: 10px 20px; border-radius: 8px; border: 2px solid transparent;
+    font-size: 0.95rem; font-weight: 600; cursor: pointer; transition: 0.2s; text-align: center; font-family: inherit;
+}
+.btn-primary { background: var(--primary); color: var(--white); }
+.btn-primary:hover { background: var(--primary-dark); transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn-outline { background: transparent; border-color: var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+.btn-danger { background: var(--danger); color: var(--white); }
+.btn-danger:hover { background: #b91c1c; }
+.btn-sm { padding: 6px 12px; font-size: 0.85rem; }
+.btn-block { display: block; width: 100%; }
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ---------- 5. Hero section (Home page) ---------- */
+.hero { background: linear-gradient(135deg, #4f46e5, #7c3aed); color: var(--white); padding: 80px 0 90px; text-align: center; }
+.hero h1 { font-size: 2.8rem; line-height: 1.2; margin-bottom: 14px; animation: fadeUp 0.6s ease; }
+.hero p { font-size: 1.15rem; opacity: 0.9; max-width: 620px; margin: 0 auto 30px; animation: fadeUp 0.8s ease; }
+.hero-stats { display: flex; justify-content: center; gap: 18px; margin-top: 40px; flex-wrap: wrap; }
+
+.stat-pill {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 16px;
+    padding: 22px 16px;
+    width: 150px;        /* fixed, same for all three */
+    cursor: pointer;
+    user-select: none;
+    transition: 0.2s;
+    backdrop-filter: blur(4px);
+}
+.stat-pill:hover {
+    background: rgba(255, 255, 255, 0.24);
+    transform: translateY(-6px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+}
+
+.stat-pill-icon {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.18);
+    display: flex; align-items: center; justify-content: center;
+}
+.stat-pill-icon svg { width: 20px; height: 20px; color: var(--white); }
+
+.stat-pill strong { display: block; font-size: 1.9rem; line-height: 1.1; }
+.stat-pill-label { opacity: 0.9; font-size: 0.85rem; }
+
+@media (max-width: 800px) {
+    .stat-pill { width: 105px; padding: 16px 10px; }
+    .stat-pill-icon { width: 34px; height: 34px; }
+    .stat-pill-icon svg { width: 17px; height: 17px; }
+    .stat-pill strong { font-size: 1.5rem; }
+}
+
+/* ---------- 6. Search bar ---------- */
+.search-bar {
+    display: flex; align-items: stretch; max-width: 620px; margin: 0 auto;
+    background: var(--white); border-radius: 999px; padding: 6px;
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+    isolation: isolate;
+}
+.search-bar input {
+    flex: 1; border: none; outline: none;
+    padding: 14px 10px 14px 24px;
+    font-size: 1rem; background: transparent; min-width: 0;
+    font-family: inherit; color: var(--text);
+    border-radius: 0;
+}
+.search-bar .btn {
+    border-radius: 999px;
+    padding: 12px 28px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    border: none;
+}
+.search-bar .btn { border-radius: 50px; }
+
+/* ---------- 7. Category cards ---------- */
+.grid { display: grid; gap: 22px; }
+.category-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.category-card {
+    background: var(--white); padding: 24px; border-radius: var(--radius); border: 1px solid var(--border);
+    color: var(--text); transition: 0.25s; display: block;
+}
+.category-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); border-color: var(--primary); }
+.category-icon { font-size: 2rem; margin-bottom: 10px; }
+.category-card h3 { font-size: 1.05rem; margin-bottom: 4px; }
+.category-card p { color: var(--text-muted); font-size: 0.85rem; }
+
+/* ---------- 8. Book cards ---------- */
+.book-grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.book-card { background: var(--white); border-radius: var(--radius); border: 1px solid var(--border); overflow: hidden; transition: 0.25s; display: flex; flex-direction: column; }
+.book-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.book-cover {
+    height: 160px; display: flex; align-items: center; justify-content: center;
+    font-size: 3.2rem; font-weight: 700; color: var(--white);
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+}
+.book-cover.cover-1 { background: linear-gradient(135deg, #6366f1, #8b5cf6); }
+.book-cover.cover-2 { background: linear-gradient(135deg, #0ea5e9, #2563eb); }
+.book-cover.cover-3 { background: linear-gradient(135deg, #10b981, #059669); }
+.book-cover.cover-4 { background: linear-gradient(135deg, #f59e0b, #ea580c); }
+.book-cover.cover-5 { background: linear-gradient(135deg, #ec4899, #db2777); }
+.book-info { padding: 18px; display: flex; flex-direction: column; flex: 1; }
+.book-info h3 { font-size: 1.05rem; margin: 8px 0 4px; }
+.book-author { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 14px; }
+.book-info .btn { margin-top: auto; }
+
+.badge { display: inline-block; background: var(--primary-light); color: var(--primary); padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+.badge-green { background: #dcfce7; color: #166534; }
+.badge-orange { background: #fef3c7; color: #92400e; }
+
+/* ---------- 9. Page header, filters ---------- */
+.page-header { background: var(--white); border-bottom: 1px solid var(--border); padding: 36px 0; }
+.page-header h1 { font-size: 2rem; }
+.page-header p { color: var(--text-muted); }
+
+.filter-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px; background: var(--white); padding: 16px; border-radius: var(--radius); border: 1px solid var(--border); }
+.filter-bar input, .filter-bar select { padding: 10px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.95rem; font-family: inherit; color: var(--text); background: var(--white); }
+.filter-bar input { flex: 1; min-width: 200px; }
+
+/* ---------- 10. Book details + PDF viewer ---------- */
+.details-layout { display: grid; grid-template-columns: 280px 1fr; gap: 36px; align-items: start; }
+.details-cover { height: 340px; border-radius: var(--radius); font-size: 6rem; box-shadow: var(--shadow-lg); }
+.details-meta { list-style: none; margin: 20px 0; }
+.details-meta li { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.details-meta strong { display: inline-block; width: 110px; color: var(--text-muted); font-weight: 500; }
+.pdf-viewer { width: 100%; height: 80vh; border: 1px solid var(--border); border-radius: var(--radius); background: var(--white); }
+
+/* ---------- 11. Exam preparation ---------- */
+.material-list { display: grid; gap: 14px; }
+.material-item { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; gap: 16px; transition: 0.2s; }
+.material-item:hover { box-shadow: var(--shadow); border-color: var(--primary); }
+.material-item h3 { font-size: 1.05rem; margin-bottom: 4px; }
+.material-item p { color: var(--text-muted); font-size: 0.9rem; }
+.material-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+
+/* ---------- 12. Forms ---------- */
+.form-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 30px; max-width: 720px; box-shadow: var(--shadow); }
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 0.95rem; }
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; font-family: inherit; background: var(--white);
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus,
+.filter-bar input:focus, .filter-bar select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-light); }
+.form-group textarea { min-height: 110px; resize: vertical; }
+.form-hint { color: var(--text-muted); font-size: 0.85rem; margin-top: 4px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.form-actions { display: flex; gap: 12px; margin-top: 10px; }
+
+/* ---------- 13. Admin: stats + tables ---------- */
+.stats-grid { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); margin-bottom: 36px; }
+.stat-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; display: flex; align-items: center; gap: 16px; }
+.stat-icon { width: 54px; height: 54px; border-radius: 12px; background: var(--primary-light); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+.stat-card strong { display: block; font-size: 1.8rem; line-height: 1.1; }
+.stat-card span { color: var(--text-muted); font-size: 0.9rem; }
+
+.admin-nav { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 28px; }
+.table-wrapper { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border); font-size: 0.93rem; white-space: nowrap; }
+th { background: #f9fafb; font-weight: 600; color: var(--text-muted); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
+tr:last-child td { border-bottom: none; }
+tbody tr:hover { background: #fafafa; }
+.table-actions { display: flex; gap: 8px; }
+.table-actions form { display: inline; }
+
+/* ---------- 14. Empty state ---------- */
+.empty-state { text-align: center; padding: 60px 20px; background: var(--white); border: 2px dashed var(--border); border-radius: var(--radius); color: var(--text-muted); }
+.empty-state .empty-icon { font-size: 3rem; margin-bottom: 10px; }
+.empty-state h3 { color: var(--text); margin-bottom: 6px; }
+
+/* ---------- 15. Toast notifications ---------- */
+.toast-container { position: fixed; top: 80px; right: 20px; z-index: 300; display: flex; flex-direction: column; gap: 10px; max-width: calc(100% - 40px); }
+.toast { display: flex; align-items: center; justify-content: space-between; gap: 14px; min-width: 280px; padding: 14px 18px; border-radius: 10px; color: var(--white); box-shadow: var(--shadow-lg); animation: slideIn 0.35s ease; }
+.toast-success { background: var(--success); }
+.toast-error { background: var(--danger); }
+.toast-close { background: none; border: none; color: var(--white); font-size: 1.4rem; cursor: pointer; line-height: 1; }
+.toast.hide { opacity: 0; transform: translateX(30px); transition: 0.3s; }
+
+/* ---------- 16. Confirmation modal ---------- */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 400; padding: 20px; }
+.modal-overlay[hidden] { display: none; }
+.modal { background: var(--white); border-radius: var(--radius); padding: 28px; max-width: 400px; width: 100%; animation: fadeUp 0.25s ease; }
+.modal h3 { margin-bottom: 8px; }
+.modal p { color: var(--text-muted); margin-bottom: 22px; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+
+/* ---------- 17. Footer ---------- */
+.footer { background: #111827; color: #d1d5db; margin-top: 60px; }
+.footer-inner { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 30px; padding: 48px 20px 30px; }
+.footer-logo { color: var(--white); margin-bottom: 10px; }
+.footer h4 { color: var(--white); margin-bottom: 12px; }
+.footer a { display: block; color: #9ca3af; margin-bottom: 8px; transition: 0.2s; }
+.footer a:hover { color: var(--white); }
+.footer-bottom { border-top: 1px solid #1f2937; text-align: center; padding: 18px; font-size: 0.85rem; color: #9ca3af; }
+
+/* ---------- 18. Animations ---------- */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+
+/* ---------- 19. Responsive (tablet and mobile) ---------- */
+@media (max-width: 800px) {
+    .menu-toggle { display: block; }
+    .nav-menu {
+        display: none; position: absolute; top: 68px; left: 0; right: 0; background: var(--white);
+        flex-direction: column; align-items: stretch; padding: 12px 20px 20px; border-bottom: 1px solid var(--border); box-shadow: var(--shadow);
+    }
+    .nav-menu.open { display: flex; }
+    .hero { padding: 55px 0 60px; }
+    .hero h1 { font-size: 2rem; }
+    .details-layout { grid-template-columns: 1fr; }
+    .details-cover { height: 240px; }
+    .form-row { grid-template-columns: 1fr; }
+    .footer-inner { grid-template-columns: 1fr; }
+    .material-item { flex-direction: column; align-items: flex-start; }
+    .pdf-viewer { height: 70vh; }
+    .toast-container { right: 10px; left: 10px; max-width: none; }
+    .toast { min-width: 0; }
+}
+/* ---------- 20. Call-to-action banner (Home page) ---------- */
+.cta-banner {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed); color: var(--white);
+    border-radius: var(--radius); padding: 36px; display: flex;
+    justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.cta-banner h2 { margin-bottom: 6px; }
+.cta-banner p { opacity: 0.9; }
+.btn-accent { background: var(--accent); color: #1f2937; }
+.btn-accent:hover { background: #d97706; transform: translateY(-2px); }
+
+/* ---------- 21. Login / Register pages + navbar user area ---------- */
+.auth-wrapper { display: flex; justify-content: center; padding: 60px 20px; }
+.auth-card {
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow-lg); padding: 36px; width: 100%; max-width: 440px; animation: fadeUp 0.4s ease;
+}
+.auth-icon { font-size: 2.6rem; text-align: center; }
+.auth-card h1 { text-align: center; font-size: 1.6rem; margin: 6px 0 4px; }
+.auth-sub { text-align: center; color: var(--text-muted); margin-bottom: 26px; }
+.auth-switch { text-align: center; margin-top: 22px; color: var(--text-muted); font-size: 0.93rem; line-height: 1.9; }
+
+.nav-user { padding: 8px 10px; font-weight: 600; color: var(--text-muted); }
+.nav-form { display: inline; }
+.nav-menu a.nav-register { background: var(--primary); color: var(--white); }
+.nav-menu a.nav-register:hover { background: var(--primary-dark); color: var(--white); }
+
+@media (max-width: 800px) {
+    .nav-form .btn { width: 100%; }
+}
+
+/* ---------- 22. Wishlist heart button ---------- */
+.book-cover { position: relative; }
+.wishlist-btn {
+    position: absolute; top: 10px; right: 10px; width: 38px; height: 38px;
+    border-radius: 50%; border: none; background: rgba(255, 255, 255, 0.95);
+    font-size: 1.15rem; line-height: 1; cursor: pointer; box-shadow: var(--shadow);
+    display: flex; align-items: center; justify-content: center; transition: 0.2s;
+}
+.wishlist-btn:hover { transform: scale(1.15); }
+.wishlist-btn:disabled { opacity: 0.6; cursor: wait; }
+.wishlist-btn.active { animation: heartPop 0.3s ease; }
+@keyframes heartPop { 0% { transform: scale(0.7); } 60% { transform: scale(1.3); } 100% { transform: scale(1); } }
+
+
+
+.hero {
+    background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.88), rgba(124, 58, 237, 0.88)),
+        url('../images/library.jpg') center / cover no-repeat;
+}
+
+/* ---------- 24. Book cover images ---------- */
+.book-cover { position: relative; overflow: hidden; }
+.cover-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.wishlist-btn { z-index: 2; }
+
+.cover-preview { display: block; width: 110px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px; }
+.form-group .checkbox-label { display: flex; align-items: center; gap: 8px; font-weight: 400; margin-bottom: 10px; }
+.form-group .checkbox-label input { width: auto; }
+
+/* ---------- 25. Category images ---------- */
+.category-img { width: 56px; height: 56px; object-fit: cover; border-radius: 10px; margin-bottom: 10px; }
+.category-thumb { width: 44px; height: 44px; object-fit: cover; border-radius: 8px; }
+.category-thumb-empty {
+    width: 44px; height: 44px; border-radius: 8px; background: var(--primary-light);
+    display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+}
+.mini-upload-form { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.mini-upload-form input[type="file"] { font-size: 0.78rem; max-width: 150px; }
+
+.stat-icon img {
+    width: 45px;
+    height: 45px;
+    object-fit: contain;
+}
+
+/* ---------- 26. Profile page + navbar avatar ---------- */
+.nav-profile { display: flex; align-items: center; gap: 8px; padding: 6px 12px !important; }
+.nav-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; }
+.nav-avatar-default {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--primary-light); font-size: 1rem;
+}
+
+.profile-layout { display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
+.profile-photo-card { text-align: center; }
+.profile-photo-large {
+    width: 130px; height: 130px; border-radius: 50%; object-fit: cover;
+    margin: 0 auto; border: 3px solid var(--primary-light);
+}
+.profile-photo-default {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--primary-light); font-size: 3rem;
+}
+
+@media (max-width: 800px) {
+    .profile-layout { grid-template-columns: 1fr; }
+}
+
+/* ---------- 27+37. Profile page (Instagram-style) ---------- */
+.insta-profile-header {
+    display: flex; gap: 36px; align-items: flex-start; padding: 30px 0; flex-wrap: wrap;
+}
+
+.insta-avatar { width: 110px; height: 110px; flex-shrink: 0; position: relative; }
+.photo-viewer-trigger { border: none; background: none; padding: 0; cursor: zoom-in; display: block; width: 100%; height: 100%; }
+.photo-viewer-trigger:disabled { cursor: default; }
+.profile-photo-large {
+    width: 110px; height: 110px; border-radius: 50%; object-fit: cover;
+    border: 3px solid var(--border); display: block;
+}
+.profile-photo-default {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--primary-light); font-size: 2.6rem;
+}
+.photo-icon-form { position: absolute; width: 30px; height: 30px; margin: 0; z-index: 5; }
+.photo-icon-edit { bottom: 0; right: 0; }
+.photo-icon-remove { bottom: 0; left: 0; }
+.photo-input-hidden { display: none; }
+.photo-icon-btn {
+    width: 100%; height: 100%; border-radius: 50%;
+    background: var(--primary); color: #fff; border: 3px solid var(--white);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; box-shadow: var(--shadow); transition: 0.2s; padding: 0;
+}
+.photo-icon-btn:hover { background: var(--primary-dark); transform: scale(1.08); }
+.photo-icon-btn svg { width: 13px; height: 13px; }
+.photo-icon-btn-danger { background: var(--danger); }
+.photo-icon-btn-danger:hover { background: #b91c1c; }
+
+.insta-profile-info { flex: 1; min-width: 260px; }
+.insta-top-row { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+.insta-username { font-size: 1.4rem; font-weight: 400; }
+.insta-gear-btn {
+    width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: var(--text); border: 1px solid var(--border); transition: 0.2s;
+}
+.insta-gear-btn:hover { background: var(--primary-light); color: var(--primary); }
+.insta-gear-btn svg { width: 18px; height: 18px; }
+
+.insta-stats-row { display: flex; gap: 32px; margin-bottom: 16px; flex-wrap: wrap; }
+.insta-stat { font-size: 0.93rem; color: var(--text); }
+.insta-stat strong { font-weight: 700; margin-right: 4px; }
+
+.insta-bio { font-size: 0.93rem; line-height: 1.6; }
+.insta-bio p { color: var(--text-muted); margin-top: 2px; }
+.insta-bio-meta { font-size: 0.85rem; }
+
+/* Highlight-style badge circles */
+.insta-highlights { display: flex; gap: 20px; overflow-x: auto; padding: 20px 4px; }
+.insta-highlight { display: flex; flex-direction: column; align-items: center; gap: 6px; flex-shrink: 0; cursor: default; }
+.insta-highlight-circle {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--primary-light); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 1.7rem;
+    transition: 0.2s;
+}
+.insta-highlight:hover .insta-highlight-circle { transform: scale(1.06); border-color: var(--primary); }
+.insta-highlight span { font-size: 0.72rem; color: var(--text-muted); text-align: center; max-width: 70px; }
+
+.insta-divider { border: none; border-top: 1px solid var(--border); margin: 10px 0 0; }
+
+/* Tabs (Instagram-style uppercase tabs with active underline) */
+.insta-tabs { display: flex; justify-content: center; gap: 50px; border-bottom: 1px solid var(--border); }
+.insta-tab {
+    background: none; border: none; padding: 16px 4px; cursor: pointer;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; color: var(--text-muted);
+    border-top: 1px solid transparent; margin-top: -1px; transition: 0.2s;
+}
+.insta-tab.active { color: var(--text); border-top-color: var(--text); }
+
+.insta-tab-panel { padding: 24px 0 10px; }
+
+.insta-action-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 14px; }
+.insta-action-card {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 26px 14px; color: var(--text); font-size: 0.88rem; font-weight: 600;
+    transition: 0.2s;
+}
+.insta-action-card:hover { border-color: var(--primary); box-shadow: var(--shadow); transform: translateY(-3px); }
+.insta-action-icon { font-size: 1.8rem; }
+
+.profile-detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 18px; }
+.profile-detail-item { display: flex; flex-direction: column; gap: 4px; }
+.profile-detail-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 700; letter-spacing: 0.04em; }
+.profile-detail-value { font-size: 0.95rem; color: var(--text); }
+
+.profile-logout-form { max-width: 260px; margin: 30px auto; }
+
+.lightbox-overlay {
+    position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 500;
+    display: flex; align-items: center; justify-content: center; padding: 30px;
+}
+.lightbox-overlay[hidden] { display: none; }
+.lightbox-overlay img { max-width: 90%; max-height: 90%; border-radius: 12px; }
+.lightbox-close {
+    position: absolute; top: 20px; right: 24px; background: none; border: none;
+    color: #fff; font-size: 2.2rem; cursor: pointer; line-height: 1;
+}
+
+/* ---------- Mobile: Instagram collapses to centered stacked layout ---------- */
+@media (max-width: 700px) {
+    .insta-profile-header { flex-direction: column; align-items: center; text-align: center; gap: 16px; }
+    .insta-avatar { width: 90px; height: 90px; }
+    .profile-photo-large, .profile-photo-default { width: 90px; height: 90px; }
+    .insta-top-row { justify-content: center; }
+    .insta-stats-row { justify-content: center; gap: 24px; }
+    .insta-bio { text-align: center; }
+    .insta-tabs { gap: 30px; }
+}
+
+/* ---------- 28. Theme switch (slider) ---------- */
+.theme-switch { display: inline-flex; align-items: center; cursor: pointer; user-select: none; margin-left: 8px; }
+.theme-switch input { display: none; }
+
+.theme-switch-track {
+    position: relative; width: 54px; height: 28px; border-radius: 999px;
+    background: #cbd5e1; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 6px; transition: background 0.25s;
+}
+.switch-icon { width: 14px; height: 14px; color: #64748b; position: relative; z-index: 1; }
+
+.theme-switch-thumb {
+    position: absolute; top: 3px; left: 3px; width: 22px; height: 22px; border-radius: 50%;
+    background: #ffffff; box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3); transition: transform 0.25s;
+}
+.theme-switch input:checked ~ .theme-switch-track { background: var(--primary); }
+.theme-switch input:checked ~ .theme-switch-track .theme-switch-thumb { transform: translateX(26px); }
+.theme-switch input:checked ~ .theme-switch-track .switch-icon { color: #e0e7ff; }
+
+@media (max-width: 800px) {
+    .theme-switch { margin: 10px 0 0; }
+}
+
+/* ---------- 29. Dark theme: navy-blue palette matching the brand ---------- */
+:root[data-theme="dark"] {
+    --primary: #818cf8;
+    --primary-dark: #6366f1;
+    --primary-light: #1e2142;
+    --accent: #fbbf24;
+    --danger: #f87171;
+    --success: #4ade80;
+    --text: #e5e7f5;
+    --text-muted: #9aa3c4;
+    --bg: #0b0f1f;
+    --white: #141a30;
+    --border: #2a3152;
+    --shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 14px 30px rgba(0, 0, 0, 0.6);
+}
+
+/* Buttons: keep readable text on the lighter dark-mode primary color */
+:root[data-theme="dark"] .btn-primary,
+:root[data-theme="dark"] .btn-danger,
+:root[data-theme="dark"] .btn-accent,
+:root[data-theme="dark"] .nav-menu a.nav-register,
+:root[data-theme="dark"] .photo-icon-btn {
+    color: #0b0f1f;
+}
+:root[data-theme="dark"] .btn-outline { color: var(--text); }
+
+/* Badges: tuned so text stays readable on dark surfaces */
+:root[data-theme="dark"] .badge { background: #262c52; color: #c7d2fe; }
+:root[data-theme="dark"] .badge-green { background: #123527; color: #86efac; }
+:root[data-theme="dark"] .badge-orange { background: #3a2a12; color: #fcd34d; }
+
+/* Tables */
+:root[data-theme="dark"] th { background: #10162b; color: var(--text-muted); }
+:root[data-theme="dark"] tbody tr:hover { background: #10162b; }
+
+/* Cards, search bar, modal already use var(--white)/var(--border), so they adapt automatically */
+:root[data-theme="dark"] .search-bar { background: var(--white); }
+:root[data-theme="dark"] .search-bar input { color: var(--text); }
+:root[data-theme="dark"] .wishlist-btn { background: rgba(20, 26, 48, 0.92); color: #ffffff; }
+:root[data-theme="dark"] .empty-state { border-color: var(--border); background: var(--white); }
+
+/* Hero and CTA banner keep their purple gradient in both themes — no change needed */
+
+/* Category default icon backgrounds */
+:root[data-theme="dark"] .category-icon,
+:root[data-theme="dark"] .stat-icon,
+:root[data-theme="dark"] .profile-photo-default,
+:root[data-theme="dark"] .category-thumb-empty {
+    background: var(--primary-light);
+}
+
+:root[data-theme="dark"] ::selection { background: var(--primary); color: #0b0f1f; }
+
+/* ---------- 30. Dark mode: readability fixes ---------- */
+:root[data-theme="dark"] {
+    --text-muted: #b4bcd9;   /* brighter than before, was too dim to read */
+}
+
+/* Placeholder text inside inputs/textareas was nearly invisible */
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder {
+    color: #7c86ab;
+    opacity: 1;
+}
+
+/* Form hints, labels, and small helper text */
+:root[data-theme="dark"] .form-hint { color: #a5aed0; }
+:root[data-theme="dark"] .form-group label { color: var(--text); }
+
+/* Links inside body text and footer were too dark on dark background */
+:root[data-theme="dark"] a { color: #a5b4fc; }
+:root[data-theme="dark"] a:hover { color: #c7d2fe; }
+:root[data-theme="dark"] .footer a { color: #94a3c7; }
+:root[data-theme="dark"] .footer a:hover { color: #ffffff; }
+
+/* Section subtitles and secondary descriptive text */
+:root[data-theme="dark"] .section-subtitle,
+:root[data-theme="dark"] .book-author,
+:root[data-theme="dark"] .details-meta strong,
+:root[data-theme="dark"] .material-item p {
+    color: #a5aed0;
+}
+
+/* Disabled buttons and inputs */
+:root[data-theme="dark"] .btn:disabled { opacity: 0.5; color: var(--text-muted); }
+:root[data-theme="dark"] input:disabled, :root[data-theme="dark"] select:disabled { color: var(--text-muted); }
+
+/* Table cell text and stat card labels */
+:root[data-theme="dark"] td { color: var(--text); }
+:root[data-theme="dark"] .stat-card span,
+:root[data-theme="dark"] .stat-pill-label { color: #a5aed0; }
+
+/* Nav links: inactive state was too dim against the dark navbar */
+:root[data-theme="dark"] .nav-menu a { color: var(--text); }
+:root[data-theme="dark"] .nav-menu a:hover,
+:root[data-theme="dark"] .nav-menu a.active { color: var(--primary); background: var(--primary-light); }
+
+/* Search bar and filter inputs: ensure typed text is clearly visible */
+:root[data-theme="dark"] .filter-bar input,
+:root[data-theme="dark"] .filter-bar select { color: var(--text); background: var(--white); }
+
+/* ---------- 31. Star ratings and reviews ---------- */
+.star-display { display: flex; align-items: center; gap: 2px; }
+.star-display-sm { margin-top: 6px; }
+.star { color: var(--border); font-size: 1.1rem; line-height: 1; }
+.star.filled { color: #f59e0b; }
+.star-display-sm .star { font-size: 0.85rem; }
+.star-count { margin-left: 6px; font-size: 0.8rem; color: var(--text-muted); }
+
+/* Interactive star picker (pure CSS, radio buttons) */
+.star-input { display: flex; flex-direction: row-reverse; justify-content: flex-end; width: fit-content; }
+.star-input input { display: none; }
+.star-input label {
+    font-size: 1.9rem; color: var(--border); cursor: pointer; padding: 0 2px; transition: color 0.15s;
+}
+.star-input input:checked ~ label,
+.star-input label:hover,
+.star-input label:hover ~ label {
+    color: #f59e0b;
+}
+
+/* Review list */
+.review-item {
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; display: flex; gap: 14px; align-items: flex-start;
+}
+.review-avatar {
+    width: 42px; height: 42px; border-radius: 50%; overflow: hidden; flex-shrink: 0;
+    background: var(--primary-light); display: flex; align-items: center; justify-content: center;
+}
+.review-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.review-body { flex: 1; }
+.review-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
+.review-body p { color: var(--text); }
+
+@media (max-width: 800px) {
+    .review-item { flex-direction: column; }
+    .star-input label { font-size: 1.6rem; }
+}
+
+/* ---------- 32. Settings icon, settings page, FAQ ---------- */
+.settings-icon-link {
+    display: flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px; border-radius: 50%; color: var(--text);
+    margin-right: 4px; transition: 0.2s;
+}
+.settings-icon-link:hover { background: var(--primary-light); color: var(--primary); }
+.settings-icon-link svg { width: 19px; height: 19px; }
+
+.settings-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; }
+.settings-card {
+    display: flex; gap: 16px; align-items: flex-start; background: var(--white);
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; color: var(--text);
+    transition: 0.2s;
+}
+a.settings-card:hover { border-color: var(--primary); box-shadow: var(--shadow); transform: translateY(-3px); }
+.settings-card-icon {
+    width: 44px; height: 44px; border-radius: 10px; background: var(--primary-light);
+    display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;
+}
+.settings-card h3 { margin-bottom: 4px; }
+.settings-card p { color: var(--text-muted); font-size: 0.9rem; }
+.settings-card-danger { border-color: #fca5a5; }
+.settings-card-danger .settings-card-icon { background: #fee2e2; }
+
+.faq-list { display: flex; flex-direction: column; gap: 10px; }
+.faq-item {
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px;
+}
+.faq-item summary { font-weight: 600; cursor: pointer; }
+.faq-item p { margin-top: 10px; color: var(--text-muted); }
+
+:root[data-theme="dark"] .settings-card-danger { border-color: #7f1d1d; }
+:root[data-theme="dark"] .settings-card-danger .settings-card-icon { background: #3a1414; }
+
+/* ---------- 33. Admin reply box + reply form ---------- */
+.admin-reply-box {
+    background: var(--primary-light); border-left: 3px solid var(--primary);
+    border-radius: 8px; padding: 12px 16px; margin-top: 12px;
+}
+.admin-reply-box strong { font-size: 0.85rem; color: var(--primary); }
+.admin-reply-box p { margin-top: 4px; }
+
+.admin-reply-form { display: flex; gap: 10px; margin-top: 12px; align-items: flex-end; flex-wrap: wrap; }
+.admin-reply-form textarea { flex: 1; min-width: 200px; min-height: auto; padding: 8px 12px; }
+
+/* ---------- 34. Search autocomplete dropdown ---------- */
+.autocomplete-wrap { position: relative; }
+.autocomplete-dropdown {
+    position: absolute; top: calc(100% + 8px); left: 0; right: 0;
+    background: var(--white); border: 1px solid var(--border); border-radius: 12px;
+    box-shadow: var(--shadow-lg); overflow: hidden; z-index: 50; text-align: left;
+}
+.autocomplete-item {
+    display: flex; flex-direction: column; gap: 2px; padding: 10px 16px;
+    color: var(--text); border-bottom: 1px solid var(--border); transition: 0.15s;
+}
+.autocomplete-item:last-child { border-bottom: none; }
+.autocomplete-item:hover { background: var(--primary-light); }
+.autocomplete-item span { font-size: 0.8rem; color: var(--text-muted); }
+
+/* The hero search bar is rounded pill-shaped, so give its dropdown matching rounded corners */
+.hero .autocomplete-dropdown { border-radius: 16px; }
+
+/* ---------- 35. Pagination ---------- */
+.pagination { display: flex; justify-content: center; align-items: center; gap: 18px; margin-top: 36px; flex-wrap: wrap; }
+.pagination-info { color: var(--text-muted); font-size: 0.9rem; }
+
+/* ---------- 36. Featured banner ---------- */
+.featured-banner { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; padding: 22px 0; }
+.featured-banner-inner { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.featured-banner h2 { margin: 4px 0; }
+.featured-banner p { opacity: 0.9; }
+
+/* ---------- 38. Analytics grid (professional redesign) ---------- */
+.analytics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 22px; margin-top: 10px; }
+.analytics-card {
+    background: var(--white); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 24px; box-shadow: var(--shadow);
+}
+.analytics-card h3 { font-size: 1rem; margin-bottom: 18px; color: var(--text); }
+.chart-box { position: relative; height: 260px; width: 100%; }
+
+/* Bigger, more clickable settings icon */
+.settings-icon-link {
+    width: 44px; height: 44px;
+}
+.settings-icon-link svg { width: 24px; height: 24px; }
+
+/* ---------- 39. Instagram-style activity feed ---------- */
+.activity-feed { display: flex; flex-direction: column; gap: 2px; }
+.activity-item {
+    display: flex; align-items: center; gap: 14px; padding: 14px 10px;
+    border-bottom: 1px solid var(--border);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-icon {
+    width: 42px; height: 42px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--primary-light); font-size: 1.2rem;
+}
+.activity-body { flex: 1; }
+.activity-body p { font-size: 0.93rem; }
+
+/* ---------- 40. Student activity report ---------- */
+.student-report-sublist { list-style: none; padding-left: 10px; margin-top: 6px; }
+.student-report-sublist li { padding: 4px 0; font-size: 0.9rem; }
+
+/* ---------- 41. Dark mode: fix input/select/textarea visibility ---------- */
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea {
+    background: var(--white);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+:root[data-theme="dark"] input:focus,
+:root[data-theme="dark"] select:focus,
+:root[data-theme="dark"] textarea:focus {
+    background: var(--white);
+    color: var(--text);
+    border-color: var(--primary);
+}
+
+/* Autofill (browser remembers password) often forces white background — override it */
+:root[data-theme="dark"] input:-webkit-autofill,
+:root[data-theme="dark"] input:-webkit-autofill:hover,
+:root[data-theme="dark"] input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--text);
+    -webkit-box-shadow: 0 0 0px 1000px var(--white) inset;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Placeholder text visibility (in case this wasn't added earlier) */
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder {
+    color: #7c86ab;
+    opacity: 1;
+}
+
+/* ---------- 42. Password show/hide toggle (single morphing eye icon) ---------- */
+.password-field { position: relative; }
+.password-field input { padding-right: 44px; width: 100%; }
+
+.password-toggle-btn {
+    position: absolute; top: 50%; right: 10px; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; color: var(--text-muted);
+    width: 30px; height: 30px; border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    transition: color 0.2s, background 0.2s;
+}
+.password-toggle-btn:hover { color: var(--primary); background: var(--primary-light); }
+.password-toggle-btn svg { width: 20px; height: 20px; }
+
+/* Default state: plain open eye, no slash */
+.password-toggle-btn .eye-slash {
+    stroke-dashoffset: 32;
+    transition: stroke-dashoffset 0.25s ease;
+}
+.password-toggle-btn .eye-path,
+.password-toggle-btn .eye-pupil {
+    transition: opacity 0.2s ease;
+}
+
+/* When password is VISIBLE (button has .is-visible): draw the slash across the eye */
+.password-toggle-btn.is-visible .eye-slash {
+    stroke-dashoffset: 0;
+}
+.password-toggle-btn.is-visible { color: var(--primary); }
+
+/* ---------- 43. Breadcrumbs ---------- */
+.breadcrumbs { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; margin-bottom: 10px; flex-wrap: wrap; }
+.breadcrumbs a { color: var(--text-muted); transition: 0.15s; }
+.breadcrumbs a:hover { color: var(--primary); }
+.breadcrumb-sep { color: var(--border); }
+.breadcrumb-current { color: var(--text); font-weight: 600; }
+
+/* ---------- 44. Skeleton loading shimmer ---------- */
+.skeleton-loader {
+    height: 100%; width: 100%; border-radius: 10px;
+    background: linear-gradient(90deg, var(--border) 25%, var(--primary-light) 50%, var(--border) 75%);
+    background-size: 200% 100%;
+    animation: skeletonShimmer 1.4s ease-in-out infinite;
+}
+@keyframes skeletonShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Book cover images: fade in smoothly once loaded */
+.book-cover img.cover-img { opacity: 1; }
+/* ---------- 45. Bulk actions bar ---------- */
+.bulk-actions-bar {
+    display: flex; align-items: center; gap: 14px; justify-content: space-between;
+    background: var(--primary-light); border: 1px solid var(--primary);
+    border-radius: 10px; padding: 12px 16px; margin-bottom: 14px; font-size: 0.9rem; font-weight: 600;
+}

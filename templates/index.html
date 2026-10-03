@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<!-- ========== Hero with search ========== -->
+<section class="hero">
+    <div class="container">
+        <h1>
+            {% if current_user %}
+                {{ (current_user.full_name if current_user.full_name else current_user.username)|capitalize }}'s Digital Library
+            {% else %}
+                Your Digital Library,<br>Open 24/7
+            {% endif %}
+        </h1>
+        <p>
+            {% if current_user %}
+                Welcome back! Browse books, notes and question papers anytime.
+            {% else %}
+                Read books, study notes and previous question papers online. Free and always available.
+            {% endif %}
+        </p>
+        <form action="{{ url_for('books') }}" method="GET" class="search-bar autocomplete-wrap">
+            <input type="text" name="q" id="hero-search-input" autocomplete="off"
+                   placeholder="Search by title, author or subject..." required>
+            <button type="submit" class="btn btn-primary">Search</button>
+            <div class="autocomplete-dropdown" id="hero-search-dropdown" hidden></div>
+        </form>
+        <div class="hero-stats">
+            <div class="stat-pill">
+                <span class="stat-pill-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+                    </svg>
+                </span>
+                <strong>{{ stats.books }}</strong>
+                <span class="stat-pill-label">Books</span>
+            </div>
+            <div class="stat-pill">
+                <span class="stat-pill-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                </span>
+                <strong>{{ stats.categories }}</strong>
+                <span class="stat-pill-label">Categories</span>
+            </div>
+            <div class="stat-pill">
+                <span class="stat-pill-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 3v4a1 1 0 0 0 1 1h4"/>
+                        <path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2Z"/>
+                        <line x1="9" y1="13" x2="15" y2="13"/>
+                        <line x1="9" y1="17" x2="15" y2="17"/>
+                    </svg>
+                </span>
+                <strong>{{ stats.materials }}</strong>
+                <span class="stat-pill-label">Study Materials</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% if featured_book %}
+<section class="featured-banner">
+    <div class="container featured-banner-inner">
+        <span class="badge badge-orange">⭐ Book of the Day</span>
+        <h2>{{ featured_book.title }}</h2>
+        <p>by {{ featured_book.author }} · {{ featured_book.category_name }}</p>
+        <a href="{{ url_for('book_details', book_id=featured_book.id) }}" class="btn btn-primary">Read Now</a>
+    </div>
+</section>
+{% endif %}
+
+{% if recent_reads %}
+<section class="section" style="padding-bottom: 0;">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">📖 Continue Reading</h2>
+                <p class="section-subtitle">Pick up where you left off.</p>
+            </div>
+        </div>
+        <div class="grid book-grid">
+            {% for book in recent_reads %}
+                {% include "_book_card.html" %}
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- ========== Category cards ========== -->
+<section class="section">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Browse by Category</h2>
+                <p class="section-subtitle">Pick a subject area to explore.</p>
+            </div>
+        </div>
+
+        {% if categories %}
+        {% set icons = ['💻', '⚙️', '🔬', '📖', '💼', '🎓'] %}
+        <div class="grid category-grid">
+            {% for category in categories %}
+            <a href="{{ url_for('books', category=category.id) }}" class="category-card">
+                {% if category.category_image %}
+                <img src="{{ url_for('uploaded_file', filename=category.category_image) }}"
+                     alt="{{ category.name }}" class="category-img">
+                {% else %}
+                <div class="category-icon">{{ icons[loop.index0 % icons|length] }}</div>
+                {% endif %}
+                <h3>{{ category.name }}</h3>
+                <p>{{ category.book_count }} book{{ '' if category.book_count == 1 else 's' }}</p>
+            </a>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📂</div>
+            <h3>No categories yet</h3>
+            <p>Categories will appear here once the admin adds them.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ========== Latest books ========== -->
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Latest Books</h2>
+                <p class="section-subtitle">Recently added to the library.</p>
+            </div>
+            <a href="{{ url_for('books') }}" class="btn btn-outline">View all books →</a>
+        </div>
+
+        {% if latest_books %}
+        <div class="grid book-grid">
+            {% for book in latest_books %}
+                {% include "_book_card.html" %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📚</div>
+            <h3>No books yet</h3>
+            <p>Books will appear here once the admin uploads them.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- ========== Exam preparation banner ========== -->
+<section class="container">
+    <div class="cta-banner">
+        <div>
+            <h2>Preparing for an exam?</h2>
+            <p>Get subject notes, revision material and previous question papers in one place.</p>
+        </div>
+        <a href="{{ url_for('exam_preparation') }}" class="btn btn-accent">Start Preparing</a>
+    </div>
+</section>
+
+{% endblock %}

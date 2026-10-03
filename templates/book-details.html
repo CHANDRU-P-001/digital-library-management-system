@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% block title %}{{ book.title }}{% endblock %}
+
+{% block content %}
+
+<!-- ========== Page header with breadcrumb ========== -->
+<section class="page-header">
+    <div class="container">
+        <nav class="breadcrumbs">
+            <a href="{{ url_for('index') }}">Home</a>
+            <span class="breadcrumb-sep">/</span>
+            <a href="{{ url_for('books') }}">Books</a>
+            <span class="breadcrumb-sep">/</span>
+            <a href="{{ url_for('books', category=book.category_id) }}">{{ book.category_name }}</a>
+            <span class="breadcrumb-sep">/</span>
+            <span class="breadcrumb-current">{{ book.title }}</span>
+        </nav>
+        <h1>{{ book.title }}</h1>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- ========== Book information ========== -->
+        <div class="details-layout">
+            <div class="book-cover details-cover cover-{{ (book.id % 5) + 1 }}">
+                {% if book.cover_image %}
+                <img src="{{ url_for('uploaded_file', filename=book.cover_image) }}"
+                     alt="Cover of {{ book.title }}" class="cover-img">
+                {% else %}
+                {{ book.title[0] }}
+                {% endif %}
+            </div>
+            <div>
+                <span class="badge">{{ book.category_name }}</span>
+                <div class="star-display" style="margin-top: 10px;">
+                    {% set avg = (book.avg_rating or 0)|round(0, 'common')|int %}
+                    {% for i in range(1, 6) %}
+                    <span class="star {{ 'filled' if i <= avg }}">★</span>
+                    {% endfor %}
+                    {% if book.review_count %}
+                    <span class="star-count">{{ '%.1f'|format(book.avg_rating) }} ({{ book.review_count }} review{{ '' if book.review_count == 1 else 's' }})</span>
+                    {% else %}
+                    <span class="star-count">No reviews yet</span>
+                    {% endif %}
+                </div>
+                <h2 class="section-title" style="margin-top: 10px;">About this book</h2>
+                <p>{{ book.description or 'No description available for this book.' }}</p>
+
+                <ul class="details-meta">
+                    <li><strong>Author</strong> {{ book.author }}</li>
+                    <li><strong>Subject</strong> {{ book.subject }}</li>
+                    <li><strong>Category</strong> {{ book.category_name }}</li>
+                    <li><strong>Added on</strong> {{ book.created_at[:10] }}</li>
+                </ul>
+
+                <div class="form-actions">
+                    <a href="#reader" class="btn btn-primary">📖 Read Online</a>
+                    <a href="{{ url_for('uploaded_file', filename=book.pdf_file) }}"
+                       target="_blank" class="btn btn-outline">Open in New Tab</a>
+                    <a href="{{ url_for('download_book', book_id=book.id) }}"
+                       class="btn btn-outline">⬇ Download</a>
+                    <button type="button" class="btn btn-outline" id="share-book-btn"
+                            data-url="{{ request.url }}" data-title="{{ book.title }}">
+                        🔗 Share
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== PDF reader ========== -->
+        <div id="reader" style="margin-top: 50px;">
+            <h2 class="section-title">Read Online</h2>
+            <p class="section-subtitle">
+                Reading inside your browser. If the PDF doesn't appear (some phones can't show it here),
+                use "Open in New Tab".
+            </p>
+
+            <iframe class="pdf-viewer"
+                    src="{{ url_for('uploaded_file', filename=book.pdf_file) }}"
+                    title="PDF reader for {{ book.title }}">
+                Your browser can't display PDFs here.
+                <a href="{{ url_for('uploaded_file', filename=book.pdf_file) }}">Open the PDF</a>.
+            </iframe>
+        </div>
+
+        <!-- ========== Ratings & Reviews ========== -->
+        <div style="margin-top: 50px;">
+            <h2 class="section-title">Ratings &amp; Reviews</h2>
+
+            {% if current_user %}
+            <form method="POST" action="{{ url_for('submit_review', book_id=book.id) }}"
+                  class="form-card" style="margin: 18px 0 28px;">
+                <label style="font-weight: 600; margin-bottom: 8px; display: block;">
+                    {{ 'Update your rating' if my_review else 'Rate this book' }}
+                </label>
+                <div class="star-input">
+                    <input type="radio" id="star5" name="rating" value="5" {{ 'checked' if my_review and my_review.rating == 5 }}><label for="star5" title="5 stars">★</label>
+                    <input type="radio" id="star4" name="rating" value="4" {{ 'checked' if my_review and my_review.rating == 4 }}><label for="star4" title="4 stars">★</label>
+                    <input type="radio" id="star3" name="rating" value="3" {{ 'checked' if my_review and my_review.rating == 3 }}><label for="star3" title="3 stars">★</label>
+                    <input type="radio" id="star2" name="rating" value="2" {{ 'checked' if my_review and my_review.rating == 2 }}><label for="star2" title="2 stars">★</label>
+                    <input type="radio" id="star1" name="rating" value="1" {{ 'checked' if my_review and my_review.rating == 1 }}><label for="star1" title="1 star">★</label>
+                </div>
+                <div class="form-group" style="margin-top: 14px;">
+                    <textarea name="comment" maxlength="500"
+                              placeholder="Share your thoughts about this book (optional)">{{ my_review.comment if my_review else '' }}</textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    {{ 'Update Review' if my_review else 'Submit Review' }}
+                </button>
+            </form>
+            {% else %}
+            <p class="form-hint" style="margin: 14px 0;">
+                <a href="{{ url_for('login') }}">Log in</a> to rate and review this book.
+            </p>
+            {% endif %}
+
+            {% if reviews %}
+            <div class="material-list">
+                {% for review in reviews %}
+                <div class="review-item">
+                    <div class="review-avatar">
+                        {% if review.profile_photo %}
+                        <img src="{{ url_for('uploaded_file', filename=review.profile_photo) }}" alt="{{ review.username }}">
+                        {% else %}
+                        <span>👤</span>
+                        {% endif %}
+                    </div>
+                    <div class="review-body">
+                        <div class="review-head">
+                            <strong>{{ review.username }}</strong>
+                            <span class="star-display star-display-sm">
+                                {% for i in range(1, 6) %}
+                                <span class="star {{ 'filled' if i <= review.rating }}">★</span>
+                                {% endfor %}
+                            </span>
+                            <span class="form-hint">{{ review.created_at[:10] }}</span>
+                        </div>
+                        {% if review.comment %}
+                        <p>{{ review.comment }}</p>
+                        {% endif %}
+                    </div>
+                    {% if current_user and (current_user.id == review.user_id or current_user.role == 'admin') %}
+                    <form method="POST" action="{{ url_for('delete_review', review_id=review.id) }}"
+                          data-confirm="Delete this review?">
+                        <button type="submit" class="btn btn-outline btn-sm">Delete</button>
+                    </form>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">⭐</div>
+                <h3>No reviews yet</h3>
+                <p>Be the first to review this book.</p>
+            </div>
+            {% endif %}
+        </div>
+
+         {% if similar_books %}
+        <div style="margin-top: 50px;">
+            <h2 class="section-title">You Might Also Like</h2>
+            <div class="grid book-grid">
+                {% for book in similar_books %}
+                    {% include "_book_card.html" %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Admin Login' if admin_login else 'Login' }}{% endblock %}
+
+{% block content %}
+<section class="auth-wrapper">
+    <div class="auth-card">
+        <div class="auth-icon">{{ '🛡️' if admin_login else '👤' }}</div>
+        <h1>{{ 'Admin Login' if admin_login else 'Welcome Back' }}</h1>
+        <p class="auth-sub">
+            {{ 'Sign in to manage the library.' if admin_login else 'Log in to your Digital Library account.' }}
+        </p>
+
+        <form method="POST" data-loading="Signing in...">
+            <input type="hidden" name="next" value="{{ request.args.get('next', '') }}">
+            <div class="form-group">
+                <label for="username">Username</label>   <input type="text" id="username" name="username" value="{{ username }}"
+                       autocomplete="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-field">
+                    <input type="password" id="password" name="password"
+                           autocomplete="current-password" required>
+                    <button type="button" class="password-toggle-btn" data-target="password" aria-label="Show password">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path class="eye-path" d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z"/>
+                            <circle class="eye-pupil" cx="12" cy="12" r="3"/>
+                            <line class="eye-slash" x1="2" y1="2" x2="22" y2="22" stroke-dasharray="32" stroke-dashoffset="32"/>
+                        </svg>
+                    </button>
+                </div>
+                <p class="form-hint" style="text-align: right; margin-top: 6px;">
+                    <a href="{{ url_for('forgot_password') }}">Forgot password?</a>
+                </p>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Log In</button>
+        </form>
+
+        <p class="auth-switch">
+            {% if admin_login %}
+                Not an admin? <a href="{{ url_for('login') }}">User login</a>
+            {% else %}
+                New here? <a href="{{ url_for('register') }}">Create an account</a><br>
+                Are you an admin? <a href="{{ url_for('admin_login') }}">Admin login</a>
+            {% endif %}
+        </p>
+    </div>
+</section>
+{% endblock %}

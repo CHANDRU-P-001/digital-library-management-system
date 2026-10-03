@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<!-- ========== Page header ========== -->
+<section class="page-header">
+    <div class="container">
+        <h1>Admin Dashboard</h1>
+        <p>Manage books, categories and study materials.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {% include "_admin_nav.html" %}
+
+        <!-- ========== Statistics ========== -->
+        <div class="grid stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <img src="{{ url_for('static', filename='images/books.png') }}" alt="Books">
+                </div>
+                <div><strong>{{ stats.books }}</strong><span>Total Books</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <img src="{{ url_for('static', filename='images/categories.png') }}" alt="Categories">
+                </div>
+                <div><strong>{{ stats.categories }}</strong><span>Categories</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <img src="{{ url_for('static', filename='images/study-materials.png') }}" alt="Study Materials">
+                </div>
+                <div><strong>{{ stats.materials }}</strong><span>Study Materials</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <img src="{{ url_for('static', filename='images/users.png') }}" alt="Users">
+                </div>
+                <div><strong>{{ stats.users }}</strong><span>Registered Users</span></div>
+            </div>
+        </div>
+
+        <!-- ========== Books table ========== -->
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">All Books</h2>
+                <p class="section-subtitle">Edit, delete or open any book in the library.</p>
+            </div>
+            <a href="{{ url_for('add_book') }}" class="btn btn-primary">➕ Add New Book</a>
+        </div>
+
+        {% if books %}
+        <form method="POST" action="{{ url_for('bulk_delete_books') }}" id="bulk-delete-form"
+              data-confirm="Delete all selected books permanently?">
+
+            <div class="bulk-actions-bar" id="bulk-actions-bar" hidden>
+                <span id="bulk-selected-count">0 selected</span>
+                <button type="submit" class="btn btn-danger btn-sm">🗑 Delete Selected</button>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                        <th><input type="checkbox" id="select-all-books"></th>
+                        <th>ID</th>
+                        <th>Title</th>
+                            <th>Author</th>
+                            <th>Category</th>
+                            <th>Subject</th>
+                            <th>Added</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in books %}
+                        <tr>
+                            <td><input type="checkbox" name="book_ids" value="{{ book.id }}" class="book-row-checkbox"></td>
+                            <td>{{ book.id }}</td>
+                        <td><strong>{{ book.title }}</strong></td>
+                        <td>{{ book.author }}</td>
+                        <td><span class="badge">{{ book.category_name }}</span></td>
+                        <td>{{ book.subject }}</td>
+                        <td>{{ book.created_at[:10] }}</td>
+                        <td>
+                            <div class="table-actions">
+                                {% if book.is_featured %}
+                                <form method="POST" action="{{ url_for('unfeature_book') }}">
+                                    <button type="submit" class="btn btn-sm" style="background:#fbbf24;color:#1f2937;">⭐ Featured</button>
+                                </form>
+                                {% else %}
+                                <form method="POST" action="{{ url_for('feature_book', book_id=book.id) }}">
+                                    <button type="submit" class="btn btn-outline btn-sm">☆ Feature</button>
+                                </form>
+                                {% endif %}
+                                <a href="{{ url_for('book_details', book_id=book.id) }}"
+                                   class="btn btn-outline btn-sm">View</a>
+                                <a href="{{ url_for('edit_book', book_id=book.id) }}"
+                                   class="btn btn-outline btn-sm">Edit</a>
+                                <form method="POST"
+                                      action="{{ url_for('delete_book', book_id=book.id) }}"
+                                      data-confirm="Delete '{{ book.title }}' and its PDF permanently?">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📚</div>
+            <h3>No books in the library</h3>
+            <p>Add your first book to get started.</p>
+            <br>
+            <a href="{{ url_for('add_book') }}" class="btn btn-primary">Add a Book</a>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

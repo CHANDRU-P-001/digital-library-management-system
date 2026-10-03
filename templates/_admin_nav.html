@@ -1,0 +1,30 @@
+<nav class="breadcrumbs" style="margin-bottom: 14px;">
+    <a href="{{ url_for('index') }}">Home</a>
+    <span class="breadcrumb-sep">/</span>
+    <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+    {% if request.endpoint and request.endpoint != 'admin_dashboard' %}
+    <span class="breadcrumb-sep">/</span>
+    <span class="breadcrumb-current">{{ request.endpoint.replace('admin_', '').replace('_', ' ')|title }}</span>
+    {% endif %}
+</nav>
+
+<div class="admin-nav">
+    <a href="{{ url_for('admin_dashboard') }}"
+       class="btn btn-sm {{ 'btn-primary' if request.endpoint == 'admin_dashboard' else 'btn-outline' }}">📊 Dashboard</a>
+    <a href="{{ url_for('add_book') }}"
+       class="btn btn-sm {{ 'btn-primary' if request.endpoint == 'add_book' else 'btn-outline' }}">➕ Add Book</a>
+    <a href="{{ url_for('admin_categories') }}"
+       class="btn btn-sm {{ 'btn-primary' if request.endpoint == 'admin_categories' else 'btn-outline' }}">🗂 Categories</a>
+    <a href="{{ url_for('admin_materials') }}"
+       class="btn btn-sm {{ 'btn-primary' if request.endpoint == 'admin_materials' else 'btn-outline' }}">📝 Study Materials</a>
+    <a href="{{ url_for('admin_users') }}"
+       class="btn btn-sm {{ 'btn-primary' if request.endpoint == 'admin_users' else 'btn-outline' }}">👥 Users</a>
+    <a href="{{ url_for('admin_messages') }}"
+       class="btn btn-sm {{ 'btn-primary' if request.endpoint == 'admin_messages' else 'btn-outline' }}">💬 Messages</a>
+   <a href="{{ url_for('admin_analytics') }}"
+       class="btn btn-sm {{ 'btn-primary' if request.endpoint == 'admin_analytics' else 'btn-outline' }}">📈 Analytics</a>
+   <a href="{{ url_for('admin_activity') }}"
+       class="btn btn-sm {{ 'btn-primary' if request.endpoint == 'admin_activity' else 'btn-outline' }}">🕓 Activity Log</a>
+   <a href="{{ url_for('admin_student_activity') }}"
+       class="btn btn-sm {{ 'btn-primary' if request.endpoint == 'admin_student_activity' else 'btn-outline' }}">🎓 Student Activity</a>
+</div>

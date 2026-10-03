@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block title %}Support Messages{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Support Messages</h1>
+        <p>Messages sent by users through the Help Center.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {% include "_admin_nav.html" %}
+
+        {% if messages %}
+        <div class="material-list">
+            {% for msg in messages %}
+            <div class="review-item">
+                <div class="review-body">
+                    <div class="review-head">
+                        <strong>{{ msg.subject }}</strong>
+                        {% if msg.status == 'resolved' %}
+                        <span class="badge badge-green">Resolved</span>
+                        {% else %}
+                        <span class="badge badge-orange">Open</span>
+                        {% endif %}
+                        <span class="form-hint">from @{{ msg.username }} · {{ msg.created_at[:10] }}</span>
+                    </div>
+                    <p>{{ msg.message }}</p>
+                </div>
+                                {% if msg.admin_reply %}
+                <div class="admin-reply-box">
+                    <strong>Your reply:</strong>
+                    <p>{{ msg.admin_reply }}</p>
+                    <span class="form-hint">Sent {{ msg.replied_at[:10] if msg.replied_at else '' }}</span>
+                </div>
+                {% else %}
+                <form method="POST" action="{{ url_for('reply_to_message', message_id=msg.id) }}"
+                      class="admin-reply-form">
+                    <textarea name="admin_reply" maxlength="1000" rows="2"
+                              placeholder="Type your reply to {{ msg.username }}..." required></textarea>
+                    <button type="submit" class="btn btn-primary btn-sm">Send Reply</button>
+                </form>
+                {% endif %}
+
+                <div class="table-actions">
+                    {% if msg.status != 'resolved' %}
+                    <form method="POST" action="{{ url_for('resolve_message', message_id=msg.id) }}">
+                        <button type="submit" class="btn btn-outline btn-sm">Mark Resolved</button>
+                    </form>
+                    {% endif %}
+                    <form method="POST" action="{{ url_for('delete_message', message_id=msg.id) }}"
+                          data-confirm="Delete this message?">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">💬</div>
+            <h3>No messages</h3>
+            <p>User support messages will appear here.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

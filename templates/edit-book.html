@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% block title %}Edit Book{% endblock %}
+
+{% block content %}
+
+<!-- ========== Page header ========== -->
+<section class="page-header">
+    <div class="container">
+        <h1>Edit Book</h1>
+        <p>Update the details of "{{ book.title }}".</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {% include "_admin_nav.html" %}
+
+        <form method="POST" action="{{ url_for('edit_book', book_id=book.id) }}"
+              enctype="multipart/form-data" class="form-card"
+              data-loading="Saving...">
+
+            <div class="form-group">
+                <label for="title">Book Title *</label>
+                <input type="text" id="title" name="title" maxlength="200"
+                       value="{{ book.title }}" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="author">Author *</label>
+                    <input type="text" id="author" name="author" maxlength="150"
+                           value="{{ book.author }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject *</label>
+                    <input type="text" id="subject" name="subject" maxlength="100"
+                           value="{{ book.subject }}" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="category_id">Category *</label>
+                <select id="category_id" name="category_id" required>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}"
+                            {{ 'selected' if category.id == book.category_id }}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" maxlength="1000">{{ book.description or '' }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="cover">Cover Image (optional)</label>
+                {% if book.cover_image %}
+                <img src="{{ url_for('uploaded_file', filename=book.cover_image) }}"
+                     alt="Current cover" class="cover-preview">
+                <label class="checkbox-label">
+                    <input type="checkbox" name="remove_cover" value="1"> Remove the current cover
+                </label>
+                <p class="form-hint">Or choose a new image below to replace it.</p>
+                {% endif %}
+                <input type="file" id="cover" name="cover"
+                       accept="image/png,image/jpeg,image/webp">
+                <p class="form-hint">JPG, PNG or WEBP, maximum 2 MB. Leave empty to keep the current cover.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="pdf">Replace PDF (optional)</label>
+                <input type="file" id="pdf" name="pdf" accept="application/pdf,.pdf">
+                <p class="form-hint">
+                    Current file:
+                    <a href="{{ url_for('uploaded_file', filename=book.pdf_file) }}" target="_blank">view current PDF</a>.
+                    Leave empty to keep it. PDF files only, maximum 50 MB.
+                </p>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Help Center{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Help Center</h1>
+        <p><a href="{{ url_for('settings') }}">← Back to Settings</a></p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <div class="faq-list">
+            <details class="faq-item">
+                <summary>How do I read a book online?</summary>
+                <p>Open any book's details page and click "Read Online" — the PDF opens directly in your browser.</p>
+            </details>
+            <details class="faq-item">
+                <summary>How do I save a book to my wishlist?</summary>
+                <p>Click the heart icon 🤍 on any book card. It turns ❤️ once saved, and you can view all saved books under Wishlist in the navbar.</p>
+            </details>
+            <details class="faq-item">
+                <summary>How do I change my password?</summary>
+                <p>Go to Settings → Password &amp; Security, and enter your current and new password.</p>
+            </details>
+            <details class="faq-item">
+                <summary>How do I rate or review a book?</summary>
+                <p>Scroll to the bottom of any book's details page — you'll find a star rating and comment box there.</p>
+            </details>
+            <details class="faq-item">
+                <summary>I found a problem or have a suggestion. What do I do?</summary>
+                <p>Send us a message using the form below. Our admin team reviews all messages.</p>
+            </details>
+        </div>
+
+        <h2 class="section-title" style="margin-top: 40px;">Still need help?</h2>
+        <p class="section-subtitle">Send a message directly to the admin.</p>
+
+               <form method="POST" action="{{ url_for('help_center') }}" class="form-card" data-loading="Sending...">
+            <div class="form-group">
+                <label for="subject">Subject</label>
+                <input type="text" id="subject" name="subject" maxlength="150" required
+                       placeholder="e.g. A book's PDF isn't loading">
+            </div>
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" maxlength="1000" required
+                          placeholder="Describe your issue or question..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Send Message</button>
+        </form>
+
+        {% if my_messages %}
+        <h2 class="section-title" style="margin-top: 40px;">My Messages</h2>
+        <div class="material-list">
+            {% for msg in my_messages %}
+            <div class="review-item" style="flex-direction: column; align-items: stretch;">
+                <div class="review-head">
+                    <strong>{{ msg.subject }}</strong>
+                    {% if msg.status == 'resolved' %}
+                    <span class="badge badge-green">Resolved</span>
+                    {% else %}
+                    <span class="badge badge-orange">Waiting for reply</span>
+                    {% endif %}
+                    <span class="form-hint">{{ msg.created_at[:10] }}</span>
+                </div>
+                <p>{{ msg.message }}</p>
+
+                {% if msg.admin_reply %}
+                <div class="admin-reply-box">
+                    <strong>🛡️ Admin reply:</strong>
+                    <p>{{ msg.admin_reply }}</p>
+                    <span class="form-hint">{{ msg.replied_at[:10] if msg.replied_at else '' }}</span>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

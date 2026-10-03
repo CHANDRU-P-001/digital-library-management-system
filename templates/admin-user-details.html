@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}{{ user.username }} - User Details{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>User Details</h1>
+        <p><a href="{{ url_for('admin_users') }}">← Back to Users</a></p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        <!-- ========== Profile summary card ========== -->
+        <div class="profile-header-card" style="margin-top: 0;">
+            <div class="profile-photo-wrap" style="top: 0; margin-bottom: 10px;">
+                {% if user.profile_photo %}
+                <img src="{{ url_for('uploaded_file', filename=user.profile_photo) }}"
+                     alt="{{ user.username }}" class="profile-photo-large">
+                {% else %}
+                <div class="profile-photo-large profile-photo-default">👤</div>
+                {% endif %}
+            </div>
+            <h2 class="profile-name">{{ user.full_name or user.username }}</h2>
+            <p class="profile-username">
+                @{{ user.username }}
+                <span class="badge {{ 'badge-orange' if user.role == 'admin' else 'badge-green' }}">
+                    {{ user.role|capitalize }}
+                </span>
+            </p>
+            {% if user.bio %}<p class="profile-bio">{{ user.bio }}</p>{% endif %}
+        </div>
+
+        <!-- ========== Contact + account info ========== -->
+        <div class="profile-section-card">
+            <h3>Account Information</h3>
+            <div class="profile-detail-grid">
+                <div class="profile-detail-item">
+                    <span class="profile-detail-label">PHONE</span>
+                    <span class="profile-detail-value">{{ user.phone or 'Not set' }}</span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="profile-detail-label">ADDRESS</span>
+                    <span class="profile-detail-value">{{ user.address or 'Not set' }}</span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="profile-detail-label">JOINED</span>
+                    <span class="profile-detail-value">{{ user.created_at[:10] }}</span>
+                </div>
+                <div class="profile-detail-item">
+                    <span class="profile-detail-label">SECURITY QUESTION SET</span>
+                    <span class="profile-detail-value">{{ 'Yes' if user.security_question else 'No' }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== Wishlist ========== -->
+        <div class="profile-section-card">
+            <h3>❤️ Wishlist ({{ wishlist_books|length }})</h3>
+            {% if wishlist_books %}
+            <ul class="student-report-sublist">
+                {% for b in wishlist_books %}<li>{{ b.title }}</li>{% endfor %}
+            </ul>
+            {% else %}
+            <p class="form-hint">No books wishlisted.</p>
+            {% endif %}
+        </div>
+
+        <!-- ========== Downloads ========== -->
+        <div class="profile-section-card">
+            <h3>⬇️ Downloads ({{ downloads|length }})</h3>
+            {% if downloads %}
+            <ul class="student-report-sublist">
+                {% for d in downloads %}<li>{{ d.title }} <span class="form-hint">— {{ d.created_at }}</span></li>{% endfor %}
+            </ul>
+            {% else %}
+            <p class="form-hint">No downloads yet.</p>
+            {% endif %}
+        </div>
+
+        <!-- ========== Reviews ========== -->
+        <div class="profile-section-card">
+            <h3>⭐ Reviews ({{ reviews|length }})</h3>
+            {% if reviews %}
+            <ul class="student-report-sublist">
+                {% for r in reviews %}
+                <li>{{ r.title }} — {{ '★' * r.rating }}{{ '☆' * (5 - r.rating) }}
+                    {% if r.comment %}<br><span class="form-hint">"{{ r.comment }}"</span>{% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="form-hint">No reviews written.</p>
+            {% endif %}
+        </div>
+
+        {% if user.role != 'admin' %}
+        <form method="POST" action="{{ url_for('delete_user', user_id=user.id) }}"
+              data-confirm="Delete the user '{{ user.username }}' and all their data?" style="max-width: 260px;">
+            <button type="submit" class="btn btn-danger btn-block">Delete This User</button>
+        </form>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

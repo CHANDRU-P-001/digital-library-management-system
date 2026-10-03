@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Security Question{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Security Question</h1>
+        <p><a href="{{ url_for('settings') }}">← Back to Settings</a></p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% if current_question %}
+        <p class="form-hint" style="margin-bottom: 18px;">
+            Current question: <strong>{{ current_question }}</strong><br>
+            Saving below will replace it with a new question and answer.
+        </p>
+        {% else %}
+        <p class="form-hint" style="margin-bottom: 18px;">
+            You haven't set a security question yet. Set one so you can recover your account if you forget your password.
+        </p>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('security_question') }}" class="form-card" data-loading="Saving...">
+            <div class="form-group">
+                <label for="question">Security Question</label>
+                <input type="text" id="question" name="question" maxlength="150" required
+                       placeholder="e.g. What is your favorite subject?">
+            </div>
+            <div class="form-group">
+                <label for="answer">Answer</label>
+                <input type="text" id="answer" name="answer" maxlength="100" required>
+                <p class="form-hint">Not case-sensitive.</p>
+            </div>
+            <div class="form-group">
+                <label for="current_password">Confirm Your Current Password</label>
+                <input type="password" id="current_password" name="current_password" required
+                       autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn btn-primary">Save Security Question</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

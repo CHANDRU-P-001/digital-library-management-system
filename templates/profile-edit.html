@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Edit Profile</h1>
+        <p>Update your personal details.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <form method="POST" action="{{ url_for('edit_profile') }}" class="form-card" data-loading="Saving...">
+            <div class="form-group">
+                <label for="full_name">Full Name</label>
+                <input type="text" id="full_name" name="full_name" maxlength="100"
+                       value="{{ current_user.full_name or '' }}" placeholder="e.g. Chandru P">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" maxlength="20"
+                       value="{{ current_user.phone or '' }}" placeholder="e.g. 9876543210">
+            </div>
+            <div class="form-group">
+                <label for="address">Address</label>
+                <textarea id="address" name="address" maxlength="300"
+                          placeholder="e.g. City, State">{{ current_user.address or '' }}</textarea>
+            </div>
+            <div class="form-group">
+                <label for="bio">About You</label>
+                <textarea id="bio" name="bio" maxlength="300"
+                          placeholder="A short line about yourself">{{ current_user.bio or '' }}</textarea>
+                <p class="form-hint">Shown only to you. Maximum 300 characters.</p>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a href="{{ url_for('profile') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

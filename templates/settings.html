@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Settings</h1>
+        <p>Manage your account and get help.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="settings-grid">
+
+            <a href="{{ url_for('change_password') }}" class="settings-card">
+                <div class="settings-card-icon">🔒</div>
+                <div>
+                    <h3>Password &amp; Security</h3>
+                    <p>Change your account password.</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('help_center') }}" class="settings-card">
+                <div class="settings-card-icon">💬</div>
+                <div>
+                    <h3>Help Center</h3>
+                    <p>FAQs, and send a message to the admin.</p>
+                </div>
+            </a>
+
+            <a href="{{ url_for('profile') }}" class="settings-card">
+                <div class="settings-card-icon">👤</div>
+                <div>
+                    <h3>My Profile</h3>
+                    <p>Edit your name, photo and contact details.</p>
+                </div>
+            </a>
+
+            <div class="settings-card settings-card-danger">
+                <div class="settings-card-icon">🗑️</div>
+                <div>
+                    <h3>Delete Account</h3>
+                    <p>Permanently delete your account and all your data.</p>
+                    <button type="button" class="btn btn-danger btn-sm" id="open-delete-modal" style="margin-top: 10px;">
+                        Delete My Account
+                    </button>
+                </div>
+            </div>
+
+            <a href="{{ url_for('security_question') }}" class="settings-card">
+                <div class="settings-card-icon">🔑</div>
+                <div>
+                    <h3>Security Question</h3>
+                    <p>Set a question so you can recover your account if you forget your password.</p>
+                </div>
+            </a>
+
+        </div>
+    </div>
+</section>
+
+<!-- Delete account confirmation modal -->
+<div id="delete-account-modal" class="modal-overlay" hidden>
+    <div class="modal">
+        <h3>Delete your account?</h3>
+        <p>This permanently removes your profile, wishlist and reviews. This cannot be undone.</p>
+        <form method="POST" action="{{ url_for('delete_account') }}">
+            <div class="form-group">
+                <label for="delete_password">Confirm your password</label>
+                <input type="password" id="delete_password" name="password" required autocomplete="current-password">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-outline" id="cancel-delete-modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Yes, Delete My Account</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}My Activity{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>My Activity</h1>
+        <p>A timeline of everything you've done in the library.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container" style="max-width: 640px;">
+
+        {% if activities %}
+        <div class="activity-feed">
+            {% for item in activities %}
+            <div class="activity-item">
+                <div class="activity-icon activity-icon-{{ item.action }}">
+                    {% if item.action == 'view' %}👁️
+                    {% elif item.action == 'wishlist_add' %}❤️
+                    {% elif item.action == 'wishlist_remove' %}💔
+                    {% elif item.action == 'review' %}⭐
+                    {% elif item.action == 'download' %}⬇️
+                    {% else %}📌{% endif %}
+                </div>
+                <div class="activity-body">
+                    <p>{{ item.description }}</p>
+                    <span class="form-hint">{{ item.created_at }}</span>
+                </div>
+                {% if item.book_id %}
+                <a href="{{ url_for('book_details', book_id=item.book_id) }}" class="btn btn-outline btn-sm">View</a>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <h3>No activity yet</h3>
+            <p>Browse, wishlist, review or download a book to see it here.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

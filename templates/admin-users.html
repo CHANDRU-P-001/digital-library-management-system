@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Registered Users{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Registered Users</h1>
+        <p>People who have created an account in the library.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {% include "_admin_nav.html" %}
+
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">All Users</h2>
+                <p class="section-subtitle">
+                    {{ users|length }} account{{ '' if users|length == 1 else 's' }} in total.
+                </p>
+            </div>
+        </div>
+
+        {% if users %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Wishlist Books</th>
+                        <th>Joined</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td><strong>{{ user.username }}</strong></td>
+                        <td>
+                            {% if user.role == 'admin' %}
+                            <span class="badge badge-orange">Admin</span>
+                            {% else %}
+                            <span class="badge badge-green">User</span>
+                            {% endif %}
+                        </td>
+                        <td>❤️ {{ user.wishlist_count }}</td>
+                        <td>{{ user.created_at[:10] }}</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="{{ url_for('admin_view_user', user_id=user.id) }}"
+                                   class="btn btn-outline btn-sm">👁️ View</a>
+                                {% if user.role != 'admin' %}
+                                <form method="POST"
+                                      action="{{ url_for('delete_user', user_id=user.id) }}"
+                                      data-confirm="Delete the user '{{ user.username }}' and their wishlist?">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">👥</div>
+            <h3>No users yet</h3>
+            <p>Accounts will appear here after people register.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

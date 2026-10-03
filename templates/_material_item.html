@@ -1,0 +1,16 @@
+<div class="material-item">
+    <div>
+        <h3>{{ material.title }}</h3>
+        <p>{{ material.description or 'No description available.' }}</p>
+        <div class="material-tags">
+            <span class="badge">{{ material.material_type }}</span>
+            <span class="badge badge-orange">{{ material.exam_name }}</span>
+            <span class="badge badge-green">{{ material.subject }}</span>
+            {% if material.year %}
+            <span class="badge badge-green">{{ material.year }}</span>
+            {% endif %}
+        </div>
+    </div>
+    <a href="{{ url_for('uploaded_file', filename=material.pdf_file) }}"
+       target="_blank" class="btn btn-primary btn-sm">📖 Read PDF</a>
+</div>

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Page Not Found{% endblock %}
+
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="empty-state">
+            <div class="empty-icon">🔎</div>
+            <h3>404: Page not found</h3>
+            <p>The page or book you are looking for doesn't exist or was removed.</p>
+            <br>
+            <a href="{{ url_for('index') }}" class="btn btn-primary">Go to Home</a>
+            <a href="{{ url_for('books') }}" class="btn btn-outline">Browse Books</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}My Wishlist{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>❤️ My Wishlist</h1>
+        <p>Books you have hearted are saved here.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {% if books %}
+        <p class="section-subtitle">
+            {{ books|length }} book{{ '' if books|length == 1 else 's' }} in your wishlist
+        </p>
+        <div class="grid book-grid" data-wishlist-page>
+            {% for book in books %}
+                {% include "_book_card.html" %}
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🤍</div>
+            <h3>Your wishlist is empty</h3>
+            <p>Click the heart on any book to save it here.</p>
+            <br>
+            <a href="{{ url_for('books') }}" class="btn btn-primary">Browse Books</a>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

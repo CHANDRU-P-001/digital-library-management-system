@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Analytics</h1>
+        <p>Insights into your library's activity.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% include "_admin_nav.html" %}
+
+        <!-- ========== Summary stat cards ========== -->
+        <div class="grid stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">⬇️</div>
+                <div><strong>{{ summary.total_downloads }}</strong><span>Total Downloads</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">❤️</div>
+                <div><strong>{{ summary.total_wishlisted }}</strong><span>Wishlist Saves</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div><strong>{{ summary.avg_rating }}</strong><span>Average Rating</span></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🎓</div>
+                <div><strong>{{ summary.active_students }}</strong><span>Active Readers</span></div>
+            </div>
+        </div>
+
+        <div class="analytics-grid">
+            <div class="analytics-card">
+                <h3>Books Added per Month</h3>
+                <div class="chart-box">
+                    <div class="skeleton-loader" id="skeleton-months"></div>
+                    <canvas id="chart-months" style="display:none;"></canvas>
+                </div>
+            </div>
+            <div class="analytics-card">
+                <h3>Top 5 Most Wishlisted Books</h3>
+                <div class="chart-box">
+                    <div class="skeleton-loader" id="skeleton-wishlist"></div>
+                    <canvas id="chart-wishlist" style="display:none;"></canvas>
+                </div>
+            </div>
+            <div class="analytics-card">
+                <h3>Top 5 Highest Rated Books</h3>
+                <div class="chart-box">
+                    <div class="skeleton-loader" id="skeleton-ratings"></div>
+                    <canvas id="chart-ratings" style="display:none;"></canvas>
+                </div>
+            </div>
+            <div class="analytics-card">
+                <h3>Top 5 Most Downloaded Books</h3>
+                <div class="chart-box">
+                    <div class="skeleton-loader" id="skeleton-downloads"></div>
+                    <canvas id="chart-downloads" style="display:none;"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script>
+const baseOptions = { responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { labels: { color: getComputedStyle(document.documentElement).getPropertyValue('--text') } } },
+    scales: { x: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-muted') } },
+              y: { ticks: { color: getComputedStyle(document.documentElement).getPropertyValue('--text-muted') } } } };
+
+new Chart(document.getElementById("chart-months"), {
+    type: "line",
+    data: { labels: {{ months|tojson }}, datasets: [{ label: "Books added", data: {{ month_counts|tojson }},
+            borderColor: "#4f46e5", backgroundColor: "rgba(79,70,229,0.15)", fill: true, tension: 0.35, pointRadius: 4 }] },
+    options: baseOptions
+});
+document.getElementById("skeleton-months").style.display = "none";
+document.getElementById("chart-months").style.display = "block";
+
+new Chart(document.getElementById("chart-wishlist"), {
+    type: "bar",
+    data: { labels: {{ wishlist_labels|tojson }}, datasets: [{ label: "Wishlist count", data: {{ wishlist_counts|tojson }},
+            backgroundColor: "#ec4899", borderRadius: 6 }] },
+    options: { ...baseOptions, indexAxis: "y" }
+});
+document.getElementById("skeleton-wishlist").style.display = "none";
+document.getElementById("chart-wishlist").style.display = "block";
+
+
+new Chart(document.getElementById("chart-ratings"), {
+    type: "bar",
+    data: { labels: {{ rating_labels|tojson }}, datasets: [{ label: "Average rating", data: {{ rating_values|tojson }},
+            backgroundColor: "#f59e0b", borderRadius: 6 }] },
+    options: { ...baseOptions, indexAxis: "y", scales: { ...baseOptions.scales, x: { ...baseOptions.scales.x, max: 5 } } }
+});
+document.getElementById("skeleton-ratings").style.display = "none";
+document.getElementById("chart-ratings").style.display = "block";
+
+
+new Chart(document.getElementById("chart-downloads"), {
+    type: "bar",
+    data: { labels: {{ download_labels|tojson }}, datasets: [{ label: "Downloads", data: {{ download_counts|tojson }},
+            backgroundColor: "#10b981", borderRadius: 6 }] },
+    options: { ...baseOptions, indexAxis: "y" }
+});
+document.getElementById("skeleton-downloads").style.display = "none";
+document.getElementById("chart-downloads").style.display = "block";
+
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,24 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Database (recreated automatically on first run)
+database.db
+
+# Uploaded and sample PDFs (recreated automatically)
+uploads/*.pdf
+
+# Editor settings
+.vscode/
+
+uploads/*.jpg
+uploads/*.jpeg
+uploads/*.png
+uploads/*.webp
+
+.pytest_cache/
+check_db.py
+test_app.py

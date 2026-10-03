@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block title %}Manage Categories{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Manage Categories</h1>
+        <p>Categories group the books in your library.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {% include "_admin_nav.html" %}
+
+        <!-- ========== Add category form ========== -->
+        <form method="POST" action="{{ url_for('admin_categories') }}"
+              enctype="multipart/form-data" class="form-card" style="margin-bottom: 36px;">
+            <h2 class="section-title" style="font-size: 1.2rem;">Add a Category</h2>
+            <br>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="name">Category Name *</label>
+                    <input type="text" id="name" name="name" maxlength="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" maxlength="500">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="image">Category Image (optional)</label>
+                <input type="file" id="image" name="image" accept="image/png,image/jpeg,image/webp">
+                <p class="form-hint">JPG, PNG or WEBP, maximum 2 MB. Leave empty to use the default icon.</p>
+            </div>
+            <button type="submit" class="btn btn-primary">➕ Add Category</button>
+        </form>
+
+        <!-- ========== Categories table ========== -->
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">All Categories</h2>
+                <p class="section-subtitle">A category can only be deleted when it has no books.</p>
+            </div>
+        </div>
+
+        {% if categories %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Books</th>
+                        <th>Update Image</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td>
+                            {% if category.category_image %}
+                            <img src="{{ url_for('uploaded_file', filename=category.category_image) }}"
+                                 alt="{{ category.name }}" class="category-thumb">
+                            {% else %}
+                            <span class="category-thumb-empty">🗂</span>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ category.name }}</strong></td>
+                        <td>{{ category.description or '-' }}</td>
+                        <td><span class="badge">{{ category.book_count }}</span></td>
+                        <td>
+                            <form method="POST"
+                                  action="{{ url_for('update_category_image', category_id=category.id) }}"
+                                  enctype="multipart/form-data" class="mini-upload-form">
+                                <input type="file" name="image" accept="image/png,image/jpeg,image/webp">
+                                {% if category.category_image %}
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="remove_image" value="1"> Remove
+                                </label>
+                                {% endif %}
+                                <button type="submit" class="btn btn-outline btn-sm">Update</button>
+                            </form>
+                        </td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="{{ url_for('books', category=category.id) }}"
+                                   class="btn btn-outline btn-sm">View Books</a>
+                                <form method="POST"
+                                      action="{{ url_for('delete_category', category_id=category.id) }}"
+                                      data-confirm="Delete the category '{{ category.name }}'?">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🗂</div>
+            <h3>No categories yet</h3>
+            <p>Add your first category using the form above.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

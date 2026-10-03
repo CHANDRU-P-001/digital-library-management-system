@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Add Book{% endblock %}
+
+{% block content %}
+
+<!-- ========== Page header ========== -->
+<section class="page-header">
+    <div class="container">
+        <h1>Add New Book</h1>
+        <p>Fill in the details and upload the PDF.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {% include "_admin_nav.html" %}
+
+        <!-- enctype is REQUIRED for file uploads -->
+        <form method="POST" action="{{ url_for('add_book') }}"
+              enctype="multipart/form-data" class="form-card"
+              data-loading="Uploading...">
+
+            <div class="form-group">
+                <label for="title">Book Title *</label>
+                <input type="text" id="title" name="title" maxlength="200"
+                       value="{{ form.get('title', '') }}" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="author">Author *</label>
+                    <input type="text" id="author" name="author" maxlength="150"
+                           value="{{ form.get('author', '') }}" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject *</label>
+                    <input type="text" id="subject" name="subject" maxlength="100"
+                           value="{{ form.get('subject', '') }}" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="category_id">Category *</label>
+                <select id="category_id" name="category_id" required>
+                    <option value="">Select a category</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}"
+                            {{ 'selected' if category.id|string == form.get('category_id', '') }}>
+                        {{ category.name }}
+                    </option>
+                    {% endfor %}
+                </select>
+                <p class="form-hint">
+                    Need a new one? <a href="{{ url_for('admin_categories') }}">Manage categories</a>
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" maxlength="1000">{{ form.get('description', '') }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="cover">Cover Image (optional)</label>
+                <input type="file" id="cover" name="cover"
+                       accept="image/png,image/jpeg,image/webp">
+                <p class="form-hint">JPG, PNG or WEBP, maximum 2 MB. A portrait picture looks best.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="pdf">Book PDF *</label>
+                <input type="file" id="pdf" name="pdf" accept="application/pdf,.pdf" required>
+                <p class="form-hint">PDF files only, maximum 50 MB.</p>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Add Book</button>
+                <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}

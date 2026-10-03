@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}Manage Study Materials{% endblock %}
+
+{% block content %}
+
+<!-- ========== Page header ========== -->
+<section class="page-header">
+    <div class="container">
+        <h1>Manage Study Materials</h1>
+        <p>Upload notes, reference material and previous question papers.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+
+        {% include "_admin_nav.html" %}
+
+        <!-- ========== Upload form ========== -->
+        <form method="POST" action="{{ url_for('admin_materials') }}"
+              enctype="multipart/form-data" class="form-card"
+              data-loading="Uploading..." style="margin-bottom: 36px;">
+            <h2 class="section-title" style="font-size: 1.2rem;">Add Study Material</h2>
+            <br>
+
+            <div class="form-group">
+                <label for="title">Title *</label>
+                <input type="text" id="title" name="title" maxlength="200" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="subject">Subject *</label>
+                    <input type="text" id="subject" name="subject" maxlength="100" required>
+                </div>
+                <div class="form-group">
+                    <label for="exam_name">Exam *</label>
+                    <input type="text" id="exam_name" name="exam_name" maxlength="100"
+                           list="exam-suggestions" placeholder="e.g. GATE" required>
+                    <datalist id="exam-suggestions">
+                        <option value="GATE">
+                        <option value="UPSC">
+                        <option value="NEET">
+                        <option value="JEE">
+                        <option value="University Exam">
+                    </datalist>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="material_type">Material Type *</label>
+                    <select id="material_type" name="material_type" required>
+                        <option value="">Select a type</option>
+                        {% for type in material_types %}
+                        <option value="{{ type }}">{{ type }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <input type="number" id="year" name="year" min="1990" max="2100"
+                           placeholder="e.g. 2023">
+                    <p class="form-hint">Mainly for question papers. Optional.</p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" maxlength="1000"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="pdf">PDF File *</label>
+                <input type="file" id="pdf" name="pdf" accept="application/pdf,.pdf" required>
+                <p class="form-hint">PDF files only, maximum 50 MB.</p>
+            </div>
+
+            <button type="submit" class="btn btn-primary">➕ Add Study Material</button>
+        </form>
+
+        <!-- ========== Materials table ========== -->
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">All Study Materials</h2>
+                <p class="section-subtitle">{{ materials|length }} item{{ '' if materials|length == 1 else 's' }} in the library.</p>
+            </div>
+            <a href="{{ url_for('exam_preparation') }}" class="btn btn-outline">View public page →</a>
+        </div>
+
+        {% if materials %}
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Exam</th>
+                        <th>Subject</th>
+                        <th>Year</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for material in materials %}
+                    <tr>
+                        <td>{{ material.id }}</td>
+                        <td><strong>{{ material.title }}</strong></td>
+                        <td><span class="badge">{{ material.material_type }}</span></td>
+                        <td>{{ material.exam_name }}</td>
+                        <td>{{ material.subject }}</td>
+                        <td>{{ material.year or '-' }}</td>
+                        <td>
+                            <div class="table-actions">
+                                <a href="{{ url_for('uploaded_file', filename=material.pdf_file) }}"
+                                   target="_blank" class="btn btn-outline btn-sm">Read</a>
+                                <form method="POST"
+                                      action="{{ url_for('delete_material', material_id=material.id) }}"
+                                      data-confirm="Delete '{{ material.title }}' and its PDF permanently?">
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📝</div>
+            <h3>No study materials yet</h3>
+            <p>Upload your first material using the form above.</p>
+        </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}

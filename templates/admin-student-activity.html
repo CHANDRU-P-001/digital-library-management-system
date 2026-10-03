@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Student Activity{% endblock %}
+
+{% block content %}
+
+<section class="page-header">
+    <div class="container">
+        <h1>Student Activity</h1>
+        <p>What each student has downloaded and wishlisted.</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        {% include "_admin_nav.html" %}
+
+        <div class="section-header">
+            <div>
+                <h2 class="section-title">Per-Student Report</h2>
+                <p class="section-subtitle">{{ report|length }} students.</p>
+            </div>
+            <a href="{{ url_for('export_student_activity') }}" class="btn btn-primary">⬇ Export as CSV</a>
+        </div>
+
+        {% if report %}
+        <div class="student-report-list">
+            {% for student in report %}
+            <div class="form-card" style="margin-bottom: 16px;">
+                <h3>{{ student.username }}</h3>
+
+                <p class="form-hint" style="margin-top: 10px;">⬇️ Downloads ({{ student.downloads|length }})</p>
+                {% if student.downloads %}
+                <ul class="student-report-sublist">
+                    {% for d in student.downloads %}
+                    <li>{{ d.title }} <span class="form-hint">— {{ d.created_at }}</span></li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="form-hint">No downloads yet.</p>
+                {% endif %}
+
+                <p class="form-hint" style="margin-top: 14px;">❤️ Wishlist ({{ student.wishlist|length }})</p>
+                {% if student.wishlist %}
+                <ul class="student-report-sublist">
+                    {% for w in student.wishlist %}
+                    <li>{{ w.title }}{% if w.created_at %} <span class="form-hint">— {{ w.created_at }}</span>{% endif %}</li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <p class="form-hint">Wishlist is empty.</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">🎓</div>
+            <h3>No students yet</h3>
+            <p>Reports will appear here once students register and use the library.</p>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+{% endblock %}
